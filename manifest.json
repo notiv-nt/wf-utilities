@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "WF Utilities",
+  "description": "",
+  "version": "1.0.0",
+  "icons": {
+    "256": "icon.png"
+  },
+  "permissions": ["tabs"],
+  "content_scripts": [
+    {
+      "matches": ["https://webtrading.wforex.com/terminal"],
+      "js": ["dist/wforex-entry.js"]
+    },
+    {
+      "matches": ["https://www.tradingview.com/chart/*"],
+      "js": ["dist/tradingview-entry.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "dist/background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    { "resources": ["/static/static.js"], "matches": ["<all_urls>"] },
+    { "resources": ["/static/order.wav"], "matches": ["<all_urls>"] },
+    { "resources": ["/static/order-success.mp3"], "matches": ["<all_urls>"] },
+    { "resources": ["/static/order-error.mp3"], "matches": ["<all_urls>"] }
+  ]
+}

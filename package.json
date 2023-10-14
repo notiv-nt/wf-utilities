@@ -1,0 +1,23 @@
+{
+  "name": "wf-utilities",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently 'npm run wforex:dev' 'npm run tradingview:dev' 'npm run background:dev'",
+    "build": "concurrently 'npm run wforex:build' 'npm run tradingview:build' 'npm run background:build'",
+    "wforex:dev": "parcel watch src/wforex-entry.ts --no-hmr",
+    "wforex:build": "parcel build src/wforex-entry.ts",
+    "tradingview:dev": "parcel watch src/tradingview-entry.ts --no-hmr",
+    "tradingview:build": "parcel watch src/tradingview-entry.ts",
+    "background:dev": "parcel watch src/background.ts --no-hmr",
+    "background:build": "parcel watch src/background.ts"
+  },
+  "dependencies": {
+    "@types/chrome": "^0.0.246",
+    "concurrently": "^8.2.1",
+    "eventemitter3": "^5.0.1",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3"
+  }
+}
