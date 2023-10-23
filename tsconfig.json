@@ -1,9 +1,11 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ES2020",
-    "jsx": "react",
+    "types": ["chrome"],
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "verbatimModuleSyntax": true

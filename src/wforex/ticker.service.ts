@@ -8,7 +8,7 @@ export function currentTicker() {
 }
 
 export function currentTickerAskBid() {
-  let row = document.querySelector(activeTickerRow);
+  const row = document.querySelector(activeTickerRow);
   if (!row) {
     errorOrderSound();
     throw new Error('Cannot find active ticker info');
@@ -25,13 +25,13 @@ export function currentTickerAskBid() {
 export function setTicker(ticker: string) {
   log(`set ticker ${ticker}`);
 
-  let selectors = [
+  const selectors = [
     `.market-watch > table > tbody > tr[title="${ticker}"]`,
     `.market-watch > table > tbody > tr[title="#${ticker}"]`,
   ];
 
   for (const selector of selectors) {
-    let element = document.querySelector<any>(selector);
+    const element = document.querySelector<any>(selector);
     if (element) {
       element.click();
       return;

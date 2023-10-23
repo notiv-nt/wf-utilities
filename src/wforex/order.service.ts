@@ -1,4 +1,4 @@
-import { config } from '../shared/config';
+import { config } from '../config';
 import { frame } from '../shared/lib';
 import { log } from '../shared/log';
 import { calculatePositionSize } from '../shared/math';
@@ -19,8 +19,8 @@ export async function createOrder(data: { price: number; ticker: string }) {
     throw new Error('Too close!');
   }
 
-  let side: 'BUY' | 'SELL' = data.price < bid ? 'BUY' : 'SELL';
-  let openPrice = data.price < bid ? ask : bid;
+  const side: 'BUY' | 'SELL' = data.price < bid ? 'BUY' : 'SELL';
+  const openPrice = data.price < bid ? ask : bid;
 
   const accurateVolume = calculatePositionSize({
     openPrice,
@@ -29,9 +29,11 @@ export async function createOrder(data: { price: number; ticker: string }) {
     maxLoss: config.maxLoss,
   });
 
-  let openVolume = Math.max(0.01, accurateVolume);
+  const openVolume = Math.max(0.01, accurateVolume);
+  const sl = side === 'SELL' ? ask + 0.21 : bid - 0.21;
 
   setVolume(openVolume);
+  setStopLoss(sl);
 
   await frame();
 
@@ -59,11 +61,23 @@ function openOrder(side: 'BUY' | 'SELL') {
 }
 
 function setVolume(val: number) {
-  let input = document.querySelector<HTMLInputElement>('.left-panel .volume label.input input');
+  const input = document.querySelector<HTMLInputElement>('.left-panel .volume label.input input');
 
   if (!input) {
     errorOrderSound();
     throw new Error('Volume input not found');
+  }
+
+  input.value = `${val}`;
+  input.dispatchEvent(new Event('blur'));
+}
+
+function setStopLoss(val: number) {
+  const input = document.querySelector<HTMLInputElement>('.left-panel .sl label.input input');
+
+  if (!input) {
+    errorOrderSound();
+    throw new Error('Stop loss input not found');
   }
 
   input.value = `${val}`;

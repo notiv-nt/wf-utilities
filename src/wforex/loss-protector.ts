@@ -1,4 +1,4 @@
-import { config } from '../shared/config';
+import { config } from '../config';
 import { isNumber } from '../shared/lib';
 import { log } from '../shared/log';
 import { loop } from '../shared/loop';
@@ -20,7 +20,7 @@ function getHeaderColumns() {
   };
 
   [...(headerRow?.children || [])].forEach((column, index) => {
-    let columnTitle = column.getAttribute('title')?.toLowerCase() || '';
+    const columnTitle = column.getAttribute('title')?.toLowerCase() || '';
 
     if (columnTitle in columns) {
       columns[columnTitle] = index;
@@ -46,13 +46,13 @@ function getOrders() {
     return null;
   }
 
-  let data: Order[] = [];
+  const data: Order[] = [];
 
   orders.forEach((order) => {
     const children = [...order.children] as HTMLDivElement[];
     const closeElement = order.querySelector('.td button.close[title*="Close"]') as HTMLButtonElement;
 
-    let item: Order = {
+    const item: Order = {
       symbol: children[columns.symbol].innerText,
       amount: Math.abs(parseFloat(children[columns.profit].innerText)),
       order,

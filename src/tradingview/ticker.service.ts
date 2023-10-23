@@ -9,7 +9,7 @@ let lastTicker = '';
 
 export function watchTicker(cb: () => void) {
   loop.on('tick10', () => {
-    let current = currentTicker();
+    const current = currentTicker();
 
     if (current && lastTicker !== current) {
       cb();

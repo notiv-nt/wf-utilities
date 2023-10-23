@@ -1,6 +1,6 @@
 import { injectScript } from '../shared/lib';
 
-let price = null;
+let price: null | number = null;
 
 export function getCrosshairPrice() {
   return price;
