@@ -30,10 +30,16 @@ export async function createOrder(data: { price: number; ticker: string }) {
   });
 
   const openVolume = Math.max(0.01, accurateVolume);
-  const sl = side === 'SELL' ? ask + 0.21 : bid - 0.21;
+  let minSl = side === 'SELL' ? ask + 0.21 : bid - 0.21;
+
+  if (side === 'SELL' && minSl < data.price) {
+    minSl = data.price;
+  } else if (side === 'BUY' && minSl > data.price) {
+    minSl = data.price;
+  }
 
   setVolume(openVolume);
-  setStopLoss(sl);
+  setStopLoss(minSl);
 
   await frame();
 

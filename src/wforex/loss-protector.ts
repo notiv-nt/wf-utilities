@@ -5,7 +5,7 @@ import { loop } from '../shared/loop';
 
 type Order = {
   symbol: string;
-  amount: number;
+  profit: number;
   order: HTMLDivElement;
   closeElement: HTMLButtonElement;
   close(): void;
@@ -54,7 +54,7 @@ function getOrders() {
 
     const item: Order = {
       symbol: children[columns.symbol].innerText,
-      amount: Math.abs(parseFloat(children[columns.profit].innerText)),
+      profit: parseFloat(children[columns.profit].innerText),
       order,
       closeElement,
       close() {
@@ -80,12 +80,12 @@ function onTick() {
   }
 
   orders.forEach((order) => {
-    if (!isNumber(order.amount)) {
+    if (!isNumber(order.profit)) {
       return;
     }
 
-    if (order.amount >= config.maxLoss) {
-      log(`Closing: ${order.symbol}, loss: ${order.amount}`);
+    if (order.profit <= config.maxLoss * -1) {
+      log(`Closing: ${order.symbol}, loss: ${order.profit}`);
       order.close();
     }
   });
