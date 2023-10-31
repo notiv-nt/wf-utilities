@@ -1,3 +1,5 @@
+import { log } from './shared/log';
+
 const DEFAULT_CONFIG = {
   maxLoss: 1, // in $
   leverage: 100,
@@ -17,6 +19,8 @@ export async function getConfig() {
       config[k] = v;
     });
   }
+
+  log('Config', config);
 
   return config;
 }

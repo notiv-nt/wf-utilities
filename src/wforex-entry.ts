@@ -1,22 +1,51 @@
 import { getConfig } from './config';
+import { log } from './shared/log';
 import { loop } from './shared/loop';
 import { onMessage } from './shared/messages';
+import { errorOrderSound, successOrderSound } from './shared/sound';
 import { startLossProtection } from './wforex/loss-protector';
-import { autoCloseTradeSuccessMessage, keepOrderPanelOpen } from './wforex/order-panel.service';
 import { createOrder } from './wforex/order.service';
 import { setTicker } from './wforex/ticker.service';
+import {
+  autoOpenTradesSection,
+  closeStatusMessage,
+  keepOrderPanelOpen,
+  keyboardShortcuts,
+  waitForAppReady,
+} from './wforex/ui.service';
 
-window.addEventListener('load', async () => {
-  // TODO: on app loaded
-
+async function main() {
   await getConfig();
 
   loop.start();
 
-  startLossProtection();
   keepOrderPanelOpen();
-  autoCloseTradeSuccessMessage();
+  autoOpenTradesSection();
+
+  //
+  await waitForAppReady();
+  // -
+
+  log('App is ready');
+
+  keyboardShortcuts();
+
+  startLossProtection();
 
   onMessage('ticker', setTicker);
-  onMessage('order', createOrder);
-});
+  onMessage('order', async (msg) => {
+    createOrder(msg)
+      .then(() => {
+        successOrderSound();
+      })
+      .catch((e) => {
+        errorOrderSound();
+        log(e.message);
+      })
+      .finally(() => {
+        closeStatusMessage();
+      });
+  });
+}
+
+main().catch(console.error);

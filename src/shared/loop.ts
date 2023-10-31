@@ -16,6 +16,10 @@ class Loop extends EventEmitter {
       this.emit('tick10');
     }
 
+    if (this.i % 60 === 0) {
+      this.emit('tick60');
+    }
+
     this.i++;
 
     if (this.i > 100000) {

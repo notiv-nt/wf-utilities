@@ -1,29 +1,46 @@
+import { normalizeTicker } from '../shared/lib';
 import { log } from '../shared/log';
 import { errorOrderSound } from '../shared/sound';
 
 const activeTickerRow = `.market-watch > table > tbody > tr.active[title]`;
 
+const TICKERS_MAP: Record<string, string> = { META: 'FB' };
+
 export function currentTicker() {
-  return (document.querySelector(activeTickerRow)?.getAttribute('title') || '').replace('#', '').toUpperCase();
+  const title = document.querySelector(activeTickerRow)?.getAttribute('title') || '';
+  return normalizeTicker(title);
 }
 
 export function currentTickerAskBid() {
   const row = document.querySelector(activeTickerRow);
+
   if (!row) {
-    errorOrderSound();
     throw new Error('Cannot find active ticker info');
   }
 
   const prices = [...row.querySelectorAll('.value.price')].map((i) => parseFloat(i.innerText));
 
+  let precision = 2;
+  try {
+    // @ts-ignore
+    precision = row.querySelector('.value.price').innerText.split('.')[1].length;
+  } catch (e) {
+    //
+  }
+
   return {
     bid: prices[0],
     ask: prices[1],
+    precision,
   };
 }
 
 export function setTicker(ticker: string) {
-  log(`set ticker ${ticker}`);
+  log(`Set ticker ${ticker}`);
+
+  if (TICKERS_MAP[ticker]) {
+    ticker = TICKERS_MAP[ticker];
+  }
 
   const selectors = [
     `.market-watch > table > tbody > tr[title="${ticker}"]`,

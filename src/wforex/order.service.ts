@@ -1,9 +1,9 @@
 import { config } from '../config';
-import { frame } from '../shared/lib';
+import { frame, roundPrice, waitFor } from '../shared/lib';
 import { log } from '../shared/log';
 import { calculatePositionSize } from '../shared/math';
-import { successOrderSound, errorOrderSound } from '../shared/sound';
 import { currentTicker, currentTickerAskBid, setTicker } from './ticker.service';
+import { clickOnOpenOrder, getStatusMessage, setComment, setStopLoss, setVolume } from './ui.service';
 
 export async function createOrder(data: { price: number; ticker: string }) {
   if (currentTicker() !== data.ticker) {
@@ -12,15 +12,18 @@ export async function createOrder(data: { price: number; ticker: string }) {
     await frame();
   }
 
-  const { ask, bid } = currentTickerAskBid();
+  if (currentTicker() !== data.ticker) {
+    throw new Error('Cannot change ticker');
+  }
+
+  const { ask, bid, precision } = currentTickerAskBid();
 
   if (data.price >= bid && data.price <= ask) {
-    errorOrderSound();
     throw new Error('Too close!');
   }
 
   const side: 'BUY' | 'SELL' = data.price < bid ? 'BUY' : 'SELL';
-  const openPrice = data.price < bid ? ask : bid;
+  const openPrice = side === 'BUY' ? ask : bid;
 
   const accurateVolume = calculatePositionSize({
     openPrice,
@@ -30,62 +33,27 @@ export async function createOrder(data: { price: number; ticker: string }) {
   });
 
   const openVolume = Math.max(0.01, accurateVolume);
-  let minSl = side === 'SELL' ? ask + 0.21 : bid - 0.21;
+  let minSl = side === 'BUY' ? bid - 0.21 : ask + 0.21;
 
-  if (side === 'SELL' && minSl < data.price) {
+  if (side === 'BUY' && minSl > data.price) {
     minSl = data.price;
-  } else if (side === 'BUY' && minSl > data.price) {
+  } else if (side === 'SELL' && minSl < data.price) {
     minSl = data.price;
   }
 
   setVolume(openVolume);
   setStopLoss(minSl);
+  setComment(`SL=${roundPrice(data.price, precision)}`);
 
   await frame();
 
-  log(`open order: ${side}, open: ${openPrice}, sl: ${Math.round(data.price * 100) / 100}, ${openVolume}`);
+  clickOnOpenOrder(side);
 
-  openOrder(side);
+  const statusMessage = await waitFor(getStatusMessage);
 
-  successOrderSound();
-}
-
-function openOrder(side: 'BUY' | 'SELL') {
-  const buttons = document.querySelectorAll<HTMLButtonElement>('.left-panel .content .footer-row .trade-button');
-
-  for (const button of buttons) {
-    const texts = { BUY: 'buy by', SELL: 'sell by' };
-    const text = texts[side];
-
-    if (button.innerText.toLowerCase().includes(text)) {
-      button.click();
-      return;
-    }
+  if (statusMessage !== 'done') {
+    throw new Error(statusMessage);
   }
 
-  errorOrderSound();
-}
-
-function setVolume(val: number) {
-  const input = document.querySelector<HTMLInputElement>('.left-panel .volume label.input input');
-
-  if (!input) {
-    errorOrderSound();
-    throw new Error('Volume input not found');
-  }
-
-  input.value = `${val}`;
-  input.dispatchEvent(new Event('blur'));
-}
-
-function setStopLoss(val: number) {
-  const input = document.querySelector<HTMLInputElement>('.left-panel .sl label.input input');
-
-  if (!input) {
-    errorOrderSound();
-    throw new Error('Stop loss input not found');
-  }
-
-  input.value = `${val}`;
-  input.dispatchEvent(new Event('blur'));
+  log(`Open: ${side}, Price: ${openPrice}, S/L: ${roundPrice(data.price, precision)}, Volume: ${openVolume}`);
 }

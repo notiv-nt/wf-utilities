@@ -12,7 +12,7 @@ export function initCrosshair() {
 
   window.addEventListener('message', (e) => {
     if (e?.data?.type === 'wf__crosshair_price') {
-      price = e.data.price;
+      price = Math.round(e.data.price * 1000) / 1000;
     }
   });
 }
