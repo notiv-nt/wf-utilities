@@ -8,7 +8,7 @@
     "src/popup.html"
   ],
   "scripts": {
-    "build": "parcel build --public-url=.",
+    "build": "rm -rf .parcel-cache && rm -rf dist && parcel build --public-url=.",
     "dev": "parcel watch --public-url=. --no-hmr"
   },
   "dependencies": {
