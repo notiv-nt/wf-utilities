@@ -4,6 +4,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
   });
 
   for (const tab of tabs) {
+    // @ts-ignore
     chrome.tabs.sendMessage(tab.id, message);
   }
 });

@@ -89,6 +89,7 @@ export function clickOnOpenOrder(side: 'BUY' | 'SELL') {
 
 export function getStatusMessage() {
   const status = document.querySelector<HTMLDivElement>('.left-panel .wrap .status');
+  // @ts-ignore
   return (status?.children[1].innerText || '').toLowerCase();
 }
 

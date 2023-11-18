@@ -2,7 +2,7 @@ import { log } from './shared/log';
 
 const DEFAULT_CONFIG = {
   maxLoss: 1, // in $
-  leverage: 100,
+  leverage: 200,
 };
 
 export type IConfig = typeof DEFAULT_CONFIG;
@@ -26,5 +26,5 @@ export async function getConfig() {
 }
 
 export async function saveConfig(data: IConfig) {
-  await chrome.storage.local.set({ ['WF_CONFIG']: data });
+  await chrome.storage.local.set({ ['WF_CONFIG']: JSON.parse(JSON.stringify(data)) });
 }

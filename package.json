@@ -1,36 +1,38 @@
 {
   "name": "wf-utilities",
   "version": "1.0.0",
-  "source": [
-    "src/wforex-entry.ts",
-    "src/tradingview-entry.ts",
-    "src/background.ts",
-    "src/popup.html"
-  ],
   "scripts": {
-    "build": "rm -rf .parcel-cache && rm -rf dist && parcel build --public-url=.",
-    "dev": "parcel watch --public-url=. --no-hmr"
+    "build": "webpack && npm run manifest:firefox && npm run zip-firefox && npm run manifest:chrome",
+    "zip-firefox": "zip -r extension-firefox.zip ./manifest.json ./icon.png dist/",
+    "manifest:chrome": "node ./create-chrome-manifest.js",
+    "manifest:firefox": "node ./create-firefox-manifest.js"
   },
   "dependencies": {
-    "@parcel/transformer-vue": "^2.10.1",
-    "@rushstack/eslint-patch": "^1.3.3",
+    "@rushstack/eslint-patch": "^1.5.1",
     "@tsconfig/node18": "^18.2.2",
-    "@types/chrome": "^0.0.246",
-    "@types/node": "^18.18.5",
-    "@vitejs/plugin-vue": "^4.4.0",
+    "@types/chrome": "^0.0.251",
+    "@types/node": "^20.9.1",
+    "@vitejs/plugin-vue": "^4.5.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
     "@vue/tsconfig": "^0.4.0",
     "autoprefixer": "^10.4.16",
-    "buffer": "^6.0.3",
-    "eslint": "^8.49.0",
+    "eslint": "^8.54.0",
     "eslint-plugin-vue": "^9.18.1",
     "eventemitter3": "^5.0.1",
-    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.31",
-    "prettier": "^3.0.3",
+    "postcss-loader": "^7.3.3",
+    "prettier": "^3.1.0",
+    "style-loader": "^3.3.3",
     "tailwindcss": "^3.3.5",
+    "ts-loader": "^9.5.1",
     "typescript": "^5.2.2",
-    "vue": "^3.3.7"
+    "vue": "^3.3.8",
+    "vue-style-loader": "^4.1.3",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "vue-loader": "^17.3.1",
+    "vue-template-compiler": "^2.7.15",
+    "webpack-cli": "^5.1.4"
   }
 }

@@ -20,14 +20,26 @@
       "js": ["dist/tradingview-entry.js"]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["/static/static.js"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["/static/order.wav"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["/static/order-success.mp3"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["/static/order-error.mp3"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "service_worker": "dist/background.js",
     "type": "module"
-  },
-  "web_accessible_resources": [
-    { "resources": ["/static/static.js"], "matches": ["<all_urls>"] },
-    { "resources": ["/static/order.wav"], "matches": ["<all_urls>"] },
-    { "resources": ["/static/order-success.mp3"], "matches": ["<all_urls>"] },
-    { "resources": ["/static/order-error.mp3"], "matches": ["<all_urls>"] }
-  ]
+  }
 }

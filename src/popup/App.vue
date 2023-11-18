@@ -27,5 +27,3 @@ onMounted(async () => {
     </label>
   </div>
 </template>
-
-<style lang="postcss" scoped></style>

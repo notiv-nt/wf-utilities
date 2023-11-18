@@ -18,6 +18,7 @@ export function currentTickerAskBid() {
     throw new Error('Cannot find active ticker info');
   }
 
+  // @ts-ignore
   const prices = [...row.querySelectorAll('.value.price')].map((i) => parseFloat(i.innerText));
 
   let precision = 2;
