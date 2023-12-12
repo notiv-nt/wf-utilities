@@ -15,6 +15,8 @@ export type Order = {
   profit: number;
   comment: string;
 
+  orderElement?: HTMLDivElement;
+
   close(): boolean;
 };
 
@@ -54,10 +56,12 @@ export function getOrders() {
       item[column] = normalizeColumnValue(column, children[index].innerText.trim());
     });
 
+    item.orderElement = order;
+
     item.close = () => {
       const time = parseInt(order.getAttribute('data-wf-closing') || '', 10);
 
-      if (Number.isNaN(time) || Date.now() - time >= 1000) {
+      if (Number.isNaN(time) || Date.now() - time >= 300) {
         closeElement.click();
 
         order.setAttribute('data-wf-closing', `${Date.now()}`);

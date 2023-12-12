@@ -1,6 +1,8 @@
+import { log } from './shared/log';
 import { loop } from './shared/loop';
-import { sendMessage } from './shared/messages';
+import { onMessage, sendMessage } from './shared/messages';
 import { getCrosshairPrice, initCrosshair } from './tradingview/crosshair';
+import { setOrders } from './tradingview/orders.service';
 import { currentTicker, tickerEvents, watchTicker } from './tradingview/ticker.service';
 
 window.addEventListener('load', () => {
@@ -15,7 +17,10 @@ window.addEventListener('load', () => {
 
   document.addEventListener('keyup', (e) => {
     if (e.code === 'KeyD' && e.ctrlKey) {
+      log('Send order', getCrosshairPrice(), currentTicker());
       sendMessage('order', { price: getCrosshairPrice(), ticker: currentTicker() });
     }
   });
+
+  onMessage('orders', (orders) => setOrders(orders));
 });

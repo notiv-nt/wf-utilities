@@ -61,4 +61,8 @@ module.exports = {
       chunks: ['popup'],
     }),
   ],
+
+  devServer: {
+    writeToDisk: true,
+  },
 };

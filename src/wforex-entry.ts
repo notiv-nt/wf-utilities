@@ -4,7 +4,7 @@ import { loop } from './shared/loop';
 import { onMessage } from './shared/messages';
 import { errorOrderSound, successOrderSound } from './shared/sound';
 import { startLossProtection } from './wforex/loss-protector';
-import { createOrder } from './wforex/order.service';
+import { closeOrderByTicker, createOrder } from './wforex/order.service';
 import { setTicker } from './wforex/ticker.service';
 import {
   autoOpenTradesSection,
@@ -46,6 +46,8 @@ async function main() {
         closeStatusMessage();
       });
   });
+
+  onMessage('close-by-ticker', closeOrderByTicker);
 }
 
 main().catch(console.error);

@@ -2,7 +2,7 @@
 import { onMounted, ref, type Ref } from 'vue';
 import { getConfig, saveConfig, type IConfig } from '../config';
 
-// @ts-ignore
+// @ts-expect-error skip
 const data: Ref<IConfig> = ref({});
 
 async function save() {

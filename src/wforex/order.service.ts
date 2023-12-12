@@ -2,6 +2,7 @@ import { config } from '../config';
 import { frame, roundPrice, waitFor } from '../shared/lib';
 import { log } from '../shared/log';
 import { calculatePositionSize } from '../shared/math';
+import { getOrders } from './lib/orders';
 import { currentTicker, currentTickerAskBid, setTicker } from './ticker.service';
 import { clickOnOpenOrder, getStatusMessage, setComment, setStopLoss, setVolume } from './ui.service';
 
@@ -49,11 +50,21 @@ export async function createOrder(data: { price: number; ticker: string }) {
 
   clickOnOpenOrder(side);
 
-  const statusMessage = await waitFor(getStatusMessage);
+  const statusMessage = await waitFor(getStatusMessage, 3000);
 
   if (statusMessage !== 'done') {
     throw new Error(statusMessage);
   }
 
   log(`Open: ${side}, Price: ${openPrice}, S/L: ${roundPrice(data.price, precision)}, Volume: ${openVolume}`);
+}
+
+export function closeOrderByTicker(ticker: string) {
+  const orders = getOrders();
+
+  orders.forEach((order) => {
+    if (order.symbol === ticker) {
+      order.orderElement?.setAttribute('data-manual-closed', 'true');
+    }
+  });
 }
